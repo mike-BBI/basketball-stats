@@ -40,7 +40,7 @@ export default function App() {
                 ].map((header, idx) => (
                   <th
                     key={idx}
-                    className="sticky top-0 z-10 bg-gray-100 px-4 py-2 text-xs uppercase tracking-wider border-b border-gray-300"
+                    className="sticky top-0 z-10 bg-gray-100 px-4 py-2"
                   >
                     {header}
                   </th>
