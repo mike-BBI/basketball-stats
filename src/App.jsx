@@ -41,9 +41,9 @@ function Navbar() {
           className="h-12 w-auto"
         />
         <Link to="/" className="hover:underline">LEBRON</Link>
+        <Link to="/games" className="hover:underline">Game Projections</Link>
         <Link to="/standings" className="hover:underline">Projected Standings</Link>
         <Link to="/seeding" className="hover:underline">Playoff Seeding</Link>
-        <Link to="/games" className="hover:underline">Game Projections</Link>
         <Link to="/team-wins" className="hover:underline">Team Wins</Link>
       </div>
     </nav>
