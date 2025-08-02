@@ -36,24 +36,68 @@ const teamStyles = {
 };
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <nav className="bg-gray-900 text-white px-4 py-3 flex items-center justify-between">
-      <div className="flex items-center space-x-6">
-        <img
-          src="https://sp-ao.shortpixel.ai/client/to_webp,q_lossy,ret_img/https://www.bball-index.com/wp-content/uploads/2018/10/logo1-copy.png"
-          alt="Logo"
-          className="h-12 w-auto"
-        />
-        <Link to="/" className="hover:underline"> Player LEBRON</Link>
-        <Link to="/team-lebron" className="hover:underline">Team LEBRON</Link>
-        <Link to="/games" className="hover:underline">Game Projections</Link>
-        <Link to="/standings" className="hover:underline">Projected Standings</Link>
-        <Link to="/seeding" className="hover:underline">Playoff Seeding</Link>
-        <Link to="/team-wins" className="hover:underline">Team Wins</Link>
+    <nav className="bg-gray-900 text-white px-4 py-3 relative z-50">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
+        <div className="flex items-center space-x-4">
+          <img
+            src="https://sp-ao.shortpixel.ai/client/to_webp,q_lossy,ret_img/https://www.bball-index.com/wp-content/uploads/2018/10/logo1-copy.png"
+            alt="Logo"
+            className="h-10 w-auto"
+          />
+          <button
+            className="text-white md:hidden text-2xl"
+            onClick={() => setOpen(true)}
+          >
+            ☰
+          </button>
+        </div>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex md:items-center md:space-x-6">
+          <Link to="/" className="hover:underline">Player LEBRON</Link>
+          <Link to="/team-lebron" className="hover:underline">Team LEBRON</Link>
+          <Link to="/games" className="hover:underline">Game Projections</Link>
+          <Link to="/standings" className="hover:underline">Projected Standings</Link>
+          <Link to="/seeding" className="hover:underline">Playoff Seeding</Link>
+          <Link to="/team-wins" className="hover:underline">Team Wins</Link>
+        </div>
       </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex">
+          {/* Sidebar */}
+          <div className="w-64 bg-gray-900 text-white p-6 shadow-lg h-full flex flex-col space-y-4">
+            <div className="flex justify-between items-center mb-6">
+              <img
+              src="https://sp-ao.shortpixel.ai/client/to_webp,q_lossy,ret_img/https://www.bball-index.com/wp-content/uploads/2018/10/logo1-copy.png"
+              alt="Logo"
+              className="h-10 w-auto"
+              />
+              <button onClick={() => setOpen(false)} className="text-2xl leading-none">&times;</button>
+            </div>
+            <Link to="/" onClick={() => setOpen(false)} className="hover:underline">Player LEBRON</Link>
+            <Link to="/team-lebron" onClick={() => setOpen(false)} className="hover:underline">Team LEBRON</Link>
+            <Link to="/games" onClick={() => setOpen(false)} className="hover:underline">Game Projections</Link>
+            <Link to="/standings" onClick={() => setOpen(false)} className="hover:underline">Projected Standings</Link>
+            <Link to="/seeding" onClick={() => setOpen(false)} className="hover:underline">Playoff Seeding</Link>
+            <Link to="/team-wins" onClick={() => setOpen(false)} className="hover:underline">Team Wins</Link>
+          </div>
+
+          {/* Dimmed Background */}
+          <div
+            className="flex-1 bg-black bg-opacity-50"
+            onClick={() => setOpen(false)}
+          />
+        </div>
+      )}
     </nav>
   );
 }
+
 
 function PlayerLEBRONPage() {
   const [players, setPlayers] = useState([]);
@@ -167,121 +211,149 @@ function PlayerLEBRONPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 text-sm text-black font-sans">
-      <div className="max-w-7xl mx-auto mb-4">
-        <h1 className="text-2xl font-bold mb-4">WNBA LEBRON</h1>
-        <div className="flex gap-4 mb-4">
-          <input
-            type="text"
-            className="px-2 py-1 border rounded text-sm"
-            placeholder="Search Player"
-            value={filters["Player"]}
-            onChange={(e) => setFilters({ ...filters, Player: e.target.value })}
-          />
+  <div className="bg-white p-1 sm:p-4 text-[10px] text-black font-sans">
+    <div className="max-w-7xl mx-auto mb-2">
+      <h1 className="text-lg sm:text-2xl font-bold mb-3">WNBA LEBRON</h1>
+      <div className="flex flex-wrap gap-1 sm:gap-4 mb-2">
+        <div className="flex justify-between items-center font-bold text-[12px]">
+          Season:
+        </div>
           <select
-            className="px-2 py-1 border rounded text-sm"
-            value={filters["Team"]}
-            onChange={(e) => setFilters({ ...filters, Team: e.target.value })}
-          >
-            <option value="">All Teams</option>
-            {uniqueOptions("Team").map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-          <select
-            className="px-2 py-1 border rounded text-sm"
-            value={filters["Offensive Archetype"]}
-            onChange={(e) => setFilters({ ...filters, "Offensive Archetype": e.target.value })}
-          >
-            <option value="">All Roles</option>
-            {uniqueOptions("Offensive Archetype").map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-          <select
-            className="px-2 py-1 border rounded text-sm"
-            value={filters["Season"]}
-            onChange={(e) => setFilters({ ...filters, Season: e.target.value })}
-          >
-            {uniqueOptions("Season").sort((a, b) => b - a).map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
+          className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
+          value={filters["Season"]}
+          onChange={(e) => setFilters({ ...filters, Season: e.target.value })}
+        >
+          {uniqueOptions("Season").sort((a, b) => b - a).map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        <select
+          className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
+          value={filters["Team"]}
+          onChange={(e) => setFilters({ ...filters, Team: e.target.value })}
+        >
+          <option value="">All Teams</option>
+          {uniqueOptions("Team").map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        <select
+          className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
+          value={filters["Offensive Archetype"]}
+          onChange={(e) => setFilters({ ...filters, "Offensive Archetype": e.target.value })}
+        >
+          <option value="">All Roles</option>
+          {uniqueOptions("Offensive Archetype").map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      
+      <input
+          type="text"
+          className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
+          placeholder="Search Player"
+          value={filters["Player"]}
+          onChange={(e) => setFilters({ ...filters, Player: e.target.value })}
+        />
         </div>
 
-        <div className="overflow-y-auto border rounded-lg shadow-md max-h-[75vh]">
-          <table className="min-w-full text-sm text-center border-collapse">
-            <thead className="bg-gray-800 text-white sticky top-0 z-10">
-              <tr>
-                {headers.map((header) => (
-                  <th
-                    key={header}
-                    className="px-2 sm:px-4 py-2 sm:py-3 text-xs font-semibold uppercase tracking-wider border-b border-gray-700 cursor-pointer"
-                    onClick={() => {
-                      const initialOrder = ["Player", "Team", "Offensive Archetype"].includes(header) ? "asc" : "desc";
-                      if (sortKey === header) {
-                        setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-                      } else {
-                        setSortKey(header);
-                        setSortOrder(initialOrder);
-                      }
-                    }}
-                  >
-                    {header}
-                    {sortKey === header && (sortOrder === "asc" ? " ▲" : " ▼")}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredPlayers.map((p, i) => {
-                const team = p.Team;
-                const style = teamStyles[team] || { bg: "transparent", color: "black" };
-                return (
-                  <tr key={i} className="hover:bg-gray-100">
-                    <td className="px-2 sm:px-4 py-2 font-medium text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
-                      {p["Player"]}
+      <div className="overflow-x-auto border rounded shadow max-h-[65vh] lg:max-h-[76vh]">
+        <table className="min-w-full text-[7.5px] sm:text-xs text-center border-collapse leading-snug">
+          <thead className="bg-gray-800 text-white sticky top-0 z-10">
+            <tr>
+              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("Player")}>
+                Player{sortKey === "Player" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("Team")}>
+                Team{sortKey === "Team" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-normal max-w-[5rem]"
+                  onClick={() => handleSort("Offensive Archetype")}>
+                Offensive Archetype{sortKey === "Offensive Archetype" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="hidden sm:table-cell px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("Age")}>
+                Age{sortKey === "Age" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="hidden sm:table-cell px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("GP")}>
+                GP{sortKey === "GP" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("MPG")}>
+                MPG{sortKey === "MPG" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="hidden sm:table-cell px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("Minutes")}>
+                Minutes{sortKey === "Minutes" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              {["LEBRON", "O-LEBRON", "D-LEBRON", "LEBRON WAR"].map((key) => (
+                <th
+                  key={key}
+                  className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort(key)}
+                >
+                  {key}{sortKey === key && (sortOrder === "asc" ? " ▲" : " ▼")}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-gray-200">
+            {filteredPlayers.map((p, i) => {
+              const team = p.Team;
+              const style = teamStyles[team] || { bg: "transparent", color: "black" };
+              return (
+                <tr key={i} className="hover:bg-gray-100">
+                  <td className="px-1 py-1 text-center font-medium " style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["Player"]}
+                  </td>
+                  <td className="px-1 py-1 text-center font-bold whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["Team"]}
+                  </td>
+                  <td className="px-1 py-1 text-center break-words whitespace-normal max-w-[6rem]" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["Offensive Archetype"]}
+                  </td>
+                  {/* Conditionally hidden on narrow screens */}
+                  <td className="px-1 py-1 text-center whitespace-nowrap hidden sm:table-cell" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["Age"]}
+                  </td>
+                  <td className="px-1 py-1 text-center whitespace-nowrap hidden sm:table-cell" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["GP"]}
+                  </td>
+                  <td className="px-1 py-1 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["MPG"]}
+                  </td>
+                  {/* Conditionally hidden Minutes */}
+                  <td className="px-1 py-1 text-center whitespace-nowrap hidden sm:table-cell" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["Minutes"]}
+                  </td>
+                  {["LEBRON", "O-LEBRON", "D-LEBRON", "LEBRON WAR"].map((key) => (
+                    <td
+                      key={key}
+                      className="px-1 py-1 text-center whitespace-nowrap"
+                      style={getGradientColor(p[key], key)}
+                    >
+                      <div className="font-bold">{p[key]}</div>
+                      {["LEBRON", "O-LEBRON", "D-LEBRON"].includes(key) && (
+                        <div className="text-[9px] text-gray-600">{p[`${key} Rank`]}</div>
+                      )}
                     </td>
-                    <td className="px-2 sm:px-4 py-2 font-bold text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
-                      {p["Team"]}
-                    </td>
-                    <td className="px-2 sm:px-4 py-2 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
-                      {p["Offensive Archetype"]}
-                    </td>
-                    <td className="px-2 sm:px-4 py-2 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>{p["Age"]}</td>
-                    <td className="px-2 sm:px-4 py-2 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>{p["GP"]}</td>
-                    <td className="px-2 sm:px-4 py-2 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>{p["MPG"]}</td>
-                    <td className="px-2 sm:px-4 py-2 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>{p["Minutes"]}</td>
-                    {[
-                      "LEBRON",
-                      "O-LEBRON",
-                      "D-LEBRON",
-                      "LEBRON WAR",
-                    ].map((key) => (
-                      <td
-                        key={key}
-                        className="px-2 sm:px-4 py-2 text-center whitespace-nowrap"
-                        style={getGradientColor(p[key], key)}
-                      >
-                        <div className="font-bold">{p[key]}</div>
-                        {[
-                          "LEBRON",
-                          "O-LEBRON",
-                          "D-LEBRON",
-                        ].includes(key) && (
-                          <div className="text-xs text-gray-600">{p[`${key} Rank`]}</div>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+
     </div>
-  );
+  </div>
+);
+
+
 }
 
 function ProjectedStandingsPage() {
@@ -342,7 +414,7 @@ function ProjectedStandingsPage() {
   const visibleHeaders = [
     "Seed",
     "Team",
-    "Conference",
+    "Conf",
     "W",
     "L",
     "Pct",
@@ -353,17 +425,17 @@ function ProjectedStandingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-sm font-sans">
+    <div className="bg-white text-black p-4 sm:p-6 text-sm font-sans">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Projected Standings</h1>
         <div className="overflow-x-auto border rounded-lg shadow-md">
-          <table className="min-w-full text-center border-collapse">
+          <table className="min-w-full text-center border-collapse text-[8px] sm:text-xs md:text-sm">
             <thead className="bg-gray-800 text-white sticky top-0 z-10">
               <tr>
                 {visibleHeaders.map((header) => (
                   <th
                     key={header}
-                    className="px-2 sm:px-4 py-2 text-xs font-semibold uppercase tracking-wider border-b border-gray-700 whitespace-nowrap"
+                    className="px-1 py-1 text-[7px] sm:text-[8px] px-1 py-2  md:text-[10px] px-1 py-2  lg:text-[10px] px-1 py-2  font-semibold uppercase border-b border-gray-700"
                   >
                     {header}
                   </th>
@@ -394,7 +466,7 @@ function ProjectedStandingsPage() {
                         return (
                           <td
                             key={colIdx}
-                            className="px-2 sm:px-4 py-2 font-bold text-center whitespace-nowrap"
+                            className="px-1 sm:px-1 py-1 font-bold text-center whitespace-nowrap"
                             style={{
                               backgroundColor: teamStyle.bg,
                               color: teamStyle.color,
@@ -408,7 +480,7 @@ function ProjectedStandingsPage() {
                       return (
                         <td
                           key={colIdx}
-                          className="px-2 sm:px-4 py-2 text-center whitespace-nowrap"
+                          className="px-1 sm:px-1 py-1 text-center whitespace-nowrap"
                           style={bgStyle}
                         >
                           {formatValue(key, rawValue)}
@@ -468,7 +540,7 @@ function GameProjectionsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-sm font-sans">
+    <div className="bg-white text-black p-4 sm:p-6 text-sm font-sans">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Game Projections</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -483,7 +555,7 @@ function GameProjectionsPage() {
             return (
               <div
                 key={index}
-                className="border rounded-lg shadow-md p-4 flex flex-col justify-between min-h-[170px]"
+                className="border rounded-lg shadow-md p-4 flex flex-col justify-between min-h-[170px] max-w-[300px]"
               >
                 <div className="text-xs text-gray-500 mb-1">
                   {game["Date"]} • {game["Time (ET)"]}
@@ -494,14 +566,18 @@ function GameProjectionsPage() {
                   {/* Away team */}
                   <div className="flex justify-between items-center font-bold mt-2">
                     <div className="flex items-center space-x-2">
+                      <div>
+                      </div>
                       <img
                         src={teamLogos[game["Away"]]}
                         alt={game["Away"]}
                         className="w-5 h-5"
                       />
+                      <div>
+                      </div>
                       <span className="font-medium">{game["Away"]}</span>
                     </div>
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-700 pl-1">
                       {showMovTop ? (-mov).toFixed(1) : formattedTotal}
                     </span>
                   </div>
@@ -509,14 +585,18 @@ function GameProjectionsPage() {
                   {/* Home team */}
                   <div className="flex justify-between items-center font-bold mt-2">
                     <div className="flex items-center space-x-2">
+                      <div>
+                      </div>
                       <img
                         src={teamLogos[game["Home"]]}
                         alt={game["Home"]}
                         className="w-5 h-5"
                       />
+                      <div>
+                      </div>
                       <span className="font-medium">{game["Home"]}</span>
                     </div>
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-700 pl-1">
                       {showMovTop ? formattedTotal : formattedMOV}
                     </span>
                   </div>
@@ -589,7 +669,7 @@ const getSeedCellStyle = (valueStr) => {
 };
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-sm font-sans">
+    <div className="bg-white text-black p-4 sm:p-6 text-sm font-sans">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Playoff Seeding</h1>
         <div className="overflow-x-auto border rounded-lg shadow-md">
@@ -715,7 +795,7 @@ function TeamWinsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-xs font-sans">
+    <div className="bg-white text-black p-4 sm:p-6 text-xs font-sans">
       <div className="max-w-full mx-auto">
         <h1 className="text-xl font-bold mb-4">Team Wins</h1>
         <div className="w-full overflow-x-auto border rounded-lg shadow-md">
@@ -841,7 +921,7 @@ function TeamLEBRONPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-sm font-sans">
+    <div className="bg-white text-black p-4 sm:p-6 text-sm font-sans">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Team LEBRON</h1>
         <div className="overflow-x-auto border rounded-lg shadow-md">
@@ -872,7 +952,7 @@ function TeamLEBRONPage() {
                         return (
                           <td
                             key={colIdx}
-                            className="px-2 sm:px-4 py-2 font-bold text-center whitespace-nowrap"
+                            className="text-[12px] px-1 sm:px-1 py-1 font-bold text-center whitespace-nowrap"
                             style={{
                               backgroundColor: teamStyle.bg,
                               color: teamStyle.color,
@@ -886,7 +966,7 @@ function TeamLEBRONPage() {
                       return (
                         <td
                           key={colIdx}
-                          className="px-2 sm:px-4 py-2 text-center whitespace-nowrap"
+                          className="text-[13px] px-1 sm:px-1 py-1 text-center whitespace-nowrap"
                           style={getCellStyle(row[key], key)}
                         >
                         <div className="font-bold">
@@ -896,7 +976,7 @@ function TeamLEBRONPage() {
                             return `${val > 0 ? "+" : ""}${val.toFixed(2)}`;
                           })()}
                         </div>
-                          <div className="text-xs text-gray-600">{row[`${key} Rank`] || "-"}</div>
+                          <div className="text-[9px] text-gray-600">{row[`${key} Rank`] || "-"}</div>
                         </td>
                       );
                     })}
