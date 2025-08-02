@@ -215,18 +215,13 @@ function PlayerLEBRONPage() {
     <div className="max-w-7xl mx-auto mb-2">
       <h1 className="text-lg sm:text-2xl font-bold mb-3">WNBA LEBRON</h1>
       <div className="flex flex-wrap gap-1 sm:gap-4 mb-2">
-        <div className="flex justify-between items-center font-bold text-[12px]">
-          Season:
-        </div>
-          <select
+      <input
+          type="text"
           className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
-          value={filters["Season"]}
-          onChange={(e) => setFilters({ ...filters, Season: e.target.value })}
-        >
-          {uniqueOptions("Season").sort((a, b) => b - a).map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
+          placeholder="Search Player"
+          value={filters["Player"]}
+          onChange={(e) => setFilters({ ...filters, Player: e.target.value })}
+        />  
         <select
           className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
           value={filters["Team"]}
@@ -248,13 +243,7 @@ function PlayerLEBRONPage() {
           ))}
         </select>
       
-      <input
-          type="text"
-          className="px-1 py-0.5 border rounded text-[10px] sm:text-sm"
-          placeholder="Search Player"
-          value={filters["Player"]}
-          onChange={(e) => setFilters({ ...filters, Player: e.target.value })}
-        />
+      
         </div>
 
       <div className="overflow-x-auto border rounded shadow max-h-[65vh] lg:max-h-[76vh]">
