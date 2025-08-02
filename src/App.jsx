@@ -14,6 +14,10 @@ const GAME_PROJECTIONS_URL =
 const TEAM_WINS_URL = 
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9OYi-dBc7irC7wwXkPvqJzLi7PAf87EYjxOnFJFacRXV4rmsi3UY_fKtwp2odLAym6s4J2S0QNV35/pub?gid=1832300028&single=true&output=csv"
 
+
+const TEAM_LEBRON_URL = 
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9OYi-dBc7irC7wwXkPvqJzLi7PAf87EYjxOnFJFacRXV4rmsi3UY_fKtwp2odLAym6s4J2S0QNV35/pub?gid=1670159200&single=true&output=csv"
+
 const teamStyles = {
   ATL: { bg: "#C8102E", color: "#469AF0" },
   CHI: { bg: "#418FDE", color: "#FFCD00" },
@@ -43,6 +47,7 @@ function Navbar() {
         <Link to="/" className="hover:underline">LEBRON</Link>
         <Link to="/games" className="hover:underline">Game Projections</Link>
         <Link to="/standings" className="hover:underline">Projected Standings</Link>
+        <Link to="/team-lebron" className="hover:underline">Team LEBRON</Link>
         <Link to="/seeding" className="hover:underline">Playoff Seeding</Link>
         <Link to="/team-wins" className="hover:underline">Team Wins</Link>
       </div>
@@ -777,6 +782,134 @@ function TeamWinsPage() {
   );
 }
 
+function TeamLEBRONPage() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    Papa.parse(TEAM_LEBRON_URL, {
+      download: true,
+      header: true,
+      complete: (results) => {
+        const cleaned = results.data.filter(row => row.Team && row.LEBRON);
+        setData(cleaned);
+      },
+    });
+  }, []);
+
+  const headers = ["Team", "LEBRON", "O-LEBRON", "D-LEBRON"];
+
+  const statKeys = ["LEBRON", "O-LEBRON", "D-LEBRON"];
+  const computeRanges = () => {
+    const ranges = {};
+    statKeys.forEach(key => {
+      const nums = data.map(row => parseFloat(row[key])).filter(n => !isNaN(n));
+      ranges[key] = {
+        min: Math.min(...nums),
+        max: Math.max(...nums),
+      };
+    });
+    return ranges;
+  };
+
+  const ranges = computeRanges();
+
+  const getCellStyle = (valStr, key) => {
+    const val = parseFloat(valStr);
+    if (isNaN(val)) return { backgroundColor: "transparent", color: "black" };
+    const { min, max } = ranges[key];
+    const range = max - min || 1;
+    const ratio = (val - min) / range;
+
+    let r, g, b;
+    const midpoint = 0.5;
+    if (ratio < midpoint) {
+      const t = ratio / midpoint;
+      r = Math.round(200 + (240 - 200) * t);
+      g = Math.round(100 + (240 - 100) * t);
+      b = Math.round(100 + (240 - 100) * t);
+    } else {
+      const t = (ratio - midpoint) / (1 - midpoint);
+      r = Math.round(240 - (240 - 100) * t);
+      g = Math.round(240 - (240 - 200) * t);
+      b = Math.round(240 - (240 - 100) * t);
+    }
+
+    return {
+      backgroundColor: `rgb(${r}, ${g}, ${b})`,
+      color: "black",
+    };
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-black p-4 sm:p-6 text-sm font-sans">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-2xl font-bold mb-4">Team LEBRON</h1>
+        <div className="overflow-x-auto border rounded-lg shadow-md">
+          <table className="min-w-full text-center border-collapse">
+            <thead className="bg-gray-800 text-white sticky top-0 z-10">
+              <tr>
+                {headers.map((header) => (
+                  <th
+                    key={header}
+                    className="px-2 sm:px-4 py-2 text-xs font-semibold uppercase tracking-wider border-b border-gray-700 whitespace-nowrap"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {data.map((row, idx) => {
+                const teamStyle = teamStyles[row.Team] || {
+                  bg: "transparent",
+                  color: "black",
+                };
+
+                return (
+                  <tr key={idx} className="hover:bg-gray-100">
+                    {headers.map((key, colIdx) => {
+                      if (key === "Team") {
+                        return (
+                          <td
+                            key={colIdx}
+                            className="px-2 sm:px-4 py-2 font-bold text-center whitespace-nowrap"
+                            style={{
+                              backgroundColor: teamStyle.bg,
+                              color: teamStyle.color,
+                            }}
+                          >
+                            {row.Team}
+                          </td>
+                        );
+                      }
+
+                      return (
+                        <td
+                          key={colIdx}
+                          className="px-2 sm:px-4 py-2 text-center whitespace-nowrap"
+                          style={getCellStyle(row[key], key)}
+                        >
+                        <div className="font-bold">
+                          {(() => {
+                            const val = parseFloat(row[key]);
+                            if (isNaN(val)) return "-";
+                            return `${val > 0 ? "+" : ""}${val.toFixed(2)}`;
+                          })()}
+                        </div>
+                          <div className="text-xs text-gray-600">{row[`${key} Rank`] || "-"}</div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 
 export default function App() {
@@ -787,6 +920,7 @@ export default function App() {
         <Route path="/" element={<PlayerLEBRONPage />} />
         <Route path="/standings" element={<ProjectedStandingsPage />} />
         <Route path="/seeding" element={<PlayoffSeedingPage />} />
+        <Route path="/team-lebron" element={<TeamLEBRONPage />} />
         <Route path="/games" element={<GameProjectionsPage />} />
         <Route path="/team-wins" element={<TeamWinsPage />} /> 
       </Routes>
