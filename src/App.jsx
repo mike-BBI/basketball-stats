@@ -281,13 +281,13 @@ function PlayerLEBRONPage() {
                   onClick={() => handleSort("GP")}>
                 GP{sortKey === "GP" && (sortOrder === "asc" ? " ▲" : " ▼")}
               </th>
-              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
-                  onClick={() => handleSort("MPG")}>
-                MPG{sortKey === "MPG" && (sortOrder === "asc" ? " ▲" : " ▼")}
-              </th>
               <th className="hidden sm:table-cell px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
                   onClick={() => handleSort("Minutes")}>
                 Minutes{sortKey === "Minutes" && (sortOrder === "asc" ? " ▲" : " ▼")}
+              </th>
+              <th className="px-1 py-1 sm:px-2 sm:py-2 font-semibold uppercase tracking-tight border-b border-gray-700 cursor-pointer whitespace-nowrap"
+                  onClick={() => handleSort("MPG")}>
+                MPG{sortKey === "MPG" && (sortOrder === "asc" ? " ▲" : " ▼")}
               </th>
               {["LEBRON", "O-LEBRON", "D-LEBRON", "LEBRON WAR"].map((key) => (
                 <th
@@ -323,12 +323,12 @@ function PlayerLEBRONPage() {
                   <td className="px-1 py-1 text-center whitespace-nowrap hidden sm:table-cell" style={{ backgroundColor: style.bg, color: style.color }}>
                     {p["GP"]}
                   </td>
-                  <td className="px-1 py-1 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
-                    {p["MPG"]}
-                  </td>
                   {/* Conditionally hidden Minutes */}
                   <td className="px-1 py-1 text-center whitespace-nowrap hidden sm:table-cell" style={{ backgroundColor: style.bg, color: style.color }}>
                     {p["Minutes"]}
+                  </td>
+                  <td className="px-1 py-1 text-center whitespace-nowrap" style={{ backgroundColor: style.bg, color: style.color }}>
+                    {p["MPG"]}
                   </td>
                   {["LEBRON", "O-LEBRON", "D-LEBRON", "LEBRON WAR"].map((key) => (
                     <td
@@ -338,7 +338,7 @@ function PlayerLEBRONPage() {
                     >
                       <div className="font-bold">{p[key]}</div>
                       {["LEBRON", "O-LEBRON", "D-LEBRON"].includes(key) && (
-                        <div className="text-[9px] text-gray-600">{p[`${key} Rank`]}</div>
+                        <div className="text-[6px] lg:text-[9px] text-gray-600">{p[`${key} Rank`]}</div>
                       )}
                     </td>
                   ))}
